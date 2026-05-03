@@ -1,0 +1,641 @@
+
+<style>
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    width: 100%;
+    background: #0d0820;
+}
+
+#stars {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.star {
+    position: absolute;
+    background: #fff;
+    border-radius: 50%;
+    animation: twinkle 2s infinite alternate;
+}
+
+@keyframes twinkle {
+    0% { opacity: .12; }
+    100% { opacity: .95; }
+}
+
+.planet {
+    position: absolute;
+    border-radius: 50%;
+    opacity: .13;
+}
+
+#layout {
+    display: flex;
+    min-height: 100vh;
+    position: relative;
+    z-index: 1;
+}
+
+#sidebar {
+    width: 195px;
+    min-width: 195px;
+    background: rgba(10, 5, 35, .88);
+    border-right: 1px solid rgba(255, 255, 255, .1);
+    padding: 14px 8px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    backdrop-filter: blur(14px);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+#sidebar-title {
+    color: rgba(200, 180, 255, .5);
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 2px 0 8px;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.cat-btn {
+    background: rgba(255, 255, 255, .06);
+    border: 1px solid rgba(255, 255, 255, .1);
+    border-radius: 13px;
+    padding: 9px 10px;
+    cursor: pointer;
+    font-size: 12px;
+    color: rgba(255, 255, 255, .8);
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    transition: all .18s;
+    font-family: 'Segoe UI', sans-serif;
+    text-align: left;
+    width: 100%;
+}
+
+.cat-btn:hover {
+    background: rgba(150, 100, 255, .28);
+    border-color: rgba(180, 140, 255, .45);
+    color: #fff;
+    transform: translateX(4px);
+}
+
+.cat-btn.active {
+    background: rgba(140, 100, 255, .42);
+    border-color: rgba(200, 160, 255, .55);
+    color: #fff;
+}
+
+.cat-icon {
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.cat-label {
+    font-size: 12px;
+    line-height: 1.2;
+}
+
+#main {
+    flex: 1;
+    padding: 16px 18px 90px;
+    display: flex;
+    flex-direction: column;
+}
+
+#header {
+    text-align: center;
+    padding: 4px 0 12px;
+}
+
+#title-text {
+    color: #fff;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    text-shadow: 0 0 30px rgba(200, 160, 255, .9);
+    font-family: 'Segoe UI', sans-serif;
+}
+
+#subtitle {
+    color: rgba(200, 180, 255, .6);
+    font-size: 11px;
+    letter-spacing: 4px;
+    margin-top: 3px;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+#gear-wrap {
+    position: fixed;
+    top: 14px;
+    right: 14px;
+    z-index: 200;
+}
+
+#gear-btn {
+    background: rgba(255, 255, 255, .12);
+    border: 1.5px solid rgba(255, 255, 255, .25);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    font-size: 19px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all .2s;
+    backdrop-filter: blur(8px);
+}
+
+#gear-btn:hover {
+    background: rgba(255, 255, 255, .25);
+    transform: rotate(40deg);
+}
+
+#lang-panel {
+    display: none;
+    position: absolute;
+    top: 48px;
+    right: 0;
+    background: rgba(12, 6, 42, .97);
+    border: 1px solid rgba(180, 140, 255, .3);
+    border-radius: 18px;
+    padding: 8px;
+    z-index: 300;
+    min-width: 152px;
+    box-shadow: 0 8px 40px rgba(0, 0, 0, .6);
+}
+
+#lang-panel.open {
+    display: block;
+}
+
+#lang-panel button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    text-align: left;
+    padding: 9px 12px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    border-radius: 10px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, .8);
+    transition: background .15s;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+#lang-panel button:hover {
+    background: rgba(255, 255, 255, .1);
+    color: #fff;
+}
+
+#lang-panel button.active {
+    background: rgba(150, 100, 255, .35);
+    color: #d4b8ff;
+    font-weight: 700;
+}
+
+#cat-title {
+    color: rgba(255, 220, 120, .9);
+    font-size: 12px;
+    text-align: center;
+    margin-bottom: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+#grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+    gap: 10px;
+}
+
+/* --- SECCIÓN MODIFICADA PARA ACLARAR EL FONDO --- */
+.item-card {
+    /* Aumentamos la opacidad del blanco para que los emojis oscuros resalten */
+    background: rgba(255, 255, 255, 0.18); 
+    border: 1.5px solid rgba(255, 255, 255, 0.25);
+    border-radius: 18px;
+    padding: 13px 5px 9px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .18s;
+    /* Un desenfoque más fuerte ayuda a separar la tarjeta del fondo de estrellas */
+    backdrop-filter: blur(12px) saturate(140%);
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.item-card:hover {
+    background: rgba(255, 255, 255, 0.28);
+    border-color: rgba(255, 210, 100, .6);
+    transform: translateY(-5px) scale(1.07);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .4);
+}
+
+.item-card:active {
+    transform: scale(.96);
+}
+
+.item-card .emoji {
+    font-size: 32px;
+    display: block;
+    margin-bottom: 4px;
+    line-height: 1;
+    /* Sombra ligera para los emojis */
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.item-card .numtxt {
+    font-size: 28px;
+    font-weight: 900;
+    color: #fff;
+    display: block;
+    margin-bottom: 4px;
+    line-height: 1.2;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+/* ----------------------------------------------- */
+
+.item-card .label {
+    font-size: 10.5px;
+    color: rgba(255, 255, 255, .92);
+    font-weight: 600;
+    letter-spacing: .2px;
+    line-height: 1.3;
+}
+
+#bubble {
+    display: none;
+    position: fixed;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 220, 80, .97);
+    border-radius: 32px;
+    padding: 12px 28px;
+    font-size: 19px;
+    font-weight: 800;
+    color: #2d1a00;
+    box-shadow: 0 4px 28px rgba(255, 200, 0, .35);
+    z-index: 500;
+    white-space: nowrap;
+    max-width: 88%;
+    text-align: center;
+    animation: popIn .2s ease;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+@keyframes popIn {
+    0% { transform: translateX(-50%) scale(.7); opacity: 0; }
+    100% { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+</style>
+
+<div id="stars"></div>
+<div id="layout">
+  <div id="sidebar">
+    <div id="sidebar-title">Categorías</div>
+    <div id="cat-list"></div>
+  </div>
+  <div id="main">
+    <div id="header">
+      <div id="title-text">✨ Asistente Voz</div>
+      <div id="subtitle">toca para escuchar</div>
+    </div>
+    <div id="cat-title"></div>
+    <div id="grid"></div>
+  </div>
+</div>
+<div id="gear-wrap">
+  <button id="gear-btn">⚙</button>
+  <div id="lang-panel">
+    <button onclick="setLang('es')" class="active" id="btn-es">🇪🇸 Español</button>
+    <button onclick="setLang('en')" id="btn-en">🇺🇸 English</button>
+    <button onclick="setLang('pt')" id="btn-pt">🇧🇷 Português</button>
+    <button onclick="setLang('ko')" id="btn-ko">🇰🇷 한국어</button>
+    <button onclick="setLang('it')" id="btn-it">🇮🇹 Italiano</button>
+    <button onclick="setLang('fr')" id="btn-fr">🇫🇷 Français</button>
+  </div>
+</div>
+<div id="bubble"></div>
+
+<script>
+const DATA={
+  frutas:{icon:"🍎",bg:"#0d1a45",names:{es:"Frutas",en:"Fruits",pt:"Frutas",ko:"과일",it:"Frutta",fr:"Fruits"},items:[
+    {e:"🍎",es:"Manzana",en:"Apple",pt:"Maçã",ko:"사과",it:"Mela",fr:"Pomme"},
+    {e:"🍌",es:"Plátano",en:"Banana",pt:"Banana",ko:"바나나",it:"Banana",fr:"Banane"},
+    {e:"🍊",es:"Naranja",en:"Orange",pt:"Laranja",ko:"오렌지",it:"Arancia",fr:"Orange"},
+    {e:"🍇",es:"Uva",en:"Grape",pt:"Uva",ko:"포도",it:"Uva",fr:"Raisin"},
+    {e:"🍓",es:"Fresa",en:"Strawberry",pt:"Morango",ko:"딸기",it:"Fragola",fr:"Fraise"},
+    {e:"🍍",es:"Piña",en:"Pineapple",pt:"Abacaxi",ko:"파인애플",it:"Ananas",fr:"Ananas"},
+    {e:"🥭",es:"Mango",en:"Mango",pt:"Manga",ko:"망고",it:"Mango",fr:"Mangue"},
+    {e:"🍋",es:"Limón",en:"Lemon",pt:"Limão",ko:"레몬",it:"Limone",fr:"Citron"},
+    {e:"🍑",es:"Durazno",en:"Peach",pt:"Pêssego",ko:"복숭아",it:"Pesca",fr:"Pêche"},
+    {e:"🍒",es:"Cereza",en:"Cherry",pt:"Cereja",ko:"체리",it:"Ciliegia",fr:"Cerise"},
+    {e:"🫐",es:"Arándano",en:"Blueberry",pt:"Mirtilo",ko:"블루베리",it:"Mirtillo",fr:"Myrtille"},
+    {e:"🍉",es:"Sandía",en:"Watermelon",pt:"Melancia",ko:"수박",it:"Anguria",fr:"Pastèque"},
+    {e:"🍈",es:"Melón",en:"Melon",pt:"Melão",ko:"멜론",it:"Melone",fr:"Melon"},
+    {e:"🍐",es:"Pera",en:"Pear",pt:"Pera",ko:"배",it:"Pera",fr:"Poire"},
+    {e:"🥝",es:"Kiwi",en:"Kiwi",pt:"Kiwi",ko:"키위",it:"Kiwi",fr:"Kiwi"},
+    {e:"🥥",es:"Coco",en:"Coconut",pt:"Coco",ko:"코코넛",it:"Cocco",fr:"Noix de coco"},
+    {e:"🍅",es:"Tomate",en:"Tomato",pt:"Tomate",ko:"토마토",it:"Pomodoro",fr:"Tomate"},
+    {e:"🫒",es:"Aceituna",en:"Olive",pt:"Azeitona",ko:"올리브",it:"Oliva",fr:"Olive"},
+    {e:"🍆",es:"Berenjena",en:"Eggplant",pt:"Berinjela",ko:"가지",it:"Melanzana",fr:"Aubergine"},
+    {e:"🥑",es:"Aguacate",en:"Avocado",pt:"Abacate",ko:"아보카도",it:"Avocado",fr:"Avocat"},
+    {e:"🌶️",es:"Chile",en:"Chili",pt:"Pimenta",ko:"고추",it:"Peperoncino",fr:"Piment"},
+    {e:"🍄",es:"Hongo",en:"Mushroom",pt:"Cogumelo",ko:"버섯",it:"Fungo",fr:"Champignon"},
+    {e:"🫑",es:"Pimiento",en:"Bell pepper",pt:"Pimentão",ko:"피망",it:"Peperone",fr:"Poivron"},
+    {e:"🥦",es:"Brócoli",en:"Broccoli",pt:"Brócoli",ko:"브로콜리",it:"Broccolo",fr:"Brocoli"}
+  ]},
+  animales:{icon:"🐶",bg:"#0a1f10",names:{es:"Animales",en:"Animals",pt:"Animais",ko:"동물",it:"Animali",fr:"Animaux"},items:[
+    {e:"🐶",es:"Perro",en:"Dog",pt:"Cachorro",ko:"강아지",it:"Cane",fr:"Chien"},
+    {e:"🐱",es:"Gato",en:"Cat",pt:"Gato",ko:"고양이",it:"Gatto",fr:"Chat"},
+    {e:"🐘",es:"Elefante",en:"Elephant",pt:"Elefante",ko:"코끼리",it:"Elefante",fr:"Éléphant"},
+    {e:"🦁",es:"León",en:"Lion",pt:"Leão",ko:"사자",it:"Leone",fr:"Lion"},
+    {e:"🐬",es:"Delfín",en:"Dolphin",pt:"Golfinho",ko:"돌고래",it:"Delfino",fr:"Dauphin"},
+    {e:"🦋",es:"Mariposa",en:"Butterfly",pt:"Borboleta",ko:"나비",it:"Farfalla",fr:"Papillon"},
+    {e:"🐢",es:"Tortuga",en:"Turtle",pt:"Tartaruga",ko:"거북이",it:"Tartaruga",fr:"Tortue"},
+    {e:"🦊",es:"Zorro",en:"Fox",pt:"Raposa",ko:"여우",it:"Volpe",fr:"Renard"},
+    {e:"🐧",es:"Pingüino",en:"Penguin",pt:"Pinguim",ko:"펭귄",it:"Pinguino",fr:"Pingouin"},
+    {e:"🦒",es:"Jirafa",en:"Giraffe",pt:"Girafa",ko:"기린",it:"Giraffa",fr:"Girafe"},
+    {e:"🐨",es:"Koala",en:"Koala",pt:"Coala",ko:"코알라",it:"Koala",fr:"Koala"},
+    {e:"🦄",es:"Unicornio",en:"Unicorn",pt:"Unicórnio",ko:"유니콘",it:"Unicorno",fr:"Licorne"},
+    {e:"🐼",es:"Panda",en:"Panda",pt:"Panda",ko:"판다",it:"Panda",fr:"Panda"},
+    {e:"🐸",es:"Rana",en:"Frog",pt:"Sapo",ko:"개구리",it:"Rana",fr:"Grenouille"},
+    {e:"🦓",es:"Cebra",en:"Zebra",pt:"Zebra",ko:"얼룩말",it:"Zebra",fr:"Zèbre"},
+    {e:"🦅",es:"Águila",en:"Eagle",pt:"Águia",ko:"독수리",it:"Aquila",fr:"Aigle"},
+    {e:"🐊",es:"Cocodrilo",en:"Crocodile",pt:"Crocodilo",ko:"악어",it:"Coccodrillo",fr:"Crocodile"},
+    {e:"🦈",es:"Tiburón",en:"Shark",pt:"Tubarão",ko:"상어",it:"Squalo",fr:"Requin"},
+    {e:"🐺",es:"Lobo",en:"Wolf",pt:"Lobo",ko:"늑대",it:"Lupo",fr:"Loup"},
+    {e:"🦜",es:"Loro",en:"Parrot",pt:"Papagaio",ko:"앵무새",it:"Pappagallo",fr:"Perroquet"},
+    {e:"🐙",es:"Pulpo",en:"Octopus",pt:"Polvo",ko:"문어",it:"Polpo",fr:"Pieuvre"},
+    {e:"🦦",es:"Nutria",en:"Otter",pt:"Lontra",ko:"수달",it:"Lontra",fr:"Loutre"},
+    {e:"🦩",es:"Flamenco",en:"Flamingo",pt:"Flamingo",ko:"플라밍고",it:"Fenicottero",fr:"Flamant"},
+    {e:"🐻",es:"Oso",en:"Bear",pt:"Urso",ko:"곰",it:"Orso",fr:"Ours"}
+  ]},
+  ropa:{icon:"👗",bg:"#1f0a28",names:{es:"Ropa",en:"Clothing",pt:"Roupas",ko:"옷",it:"Abbigliamento",fr:"Vêtements"},items:[
+    {e:"👗",es:"Vestido",en:"Dress",pt:"Vestido",ko:"드레스",it:"Vestito",fr:"Robe"},
+    {e:"👕",es:"Camiseta",en:"T-shirt",pt:"Camiseta",ko:"티셔츠",it:"Maglietta",fr:"T-shirt"},
+    {e:"👖",es:"Pantalón",en:"Pants",pt:"Calça",ko:"바지",it:"Pantaloni",fr:"Pantalon"},
+    {e:"🧥",es:"Abrigo",en:"Coat",pt:"Casaco",ko:"코트",it:"Cappotto",fr:"Manteau"},
+    {e:"👟",es:"Tenis",en:"Sneakers",pt:"Tênis",ko:"운동화",it:"Scarpe",fr:"Baskets"},
+    {e:"👒",es:"Sombrero",en:"Hat",pt:"Chapéu",ko:"모자",it:"Cappello",fr:"Chapeau"},
+    {e:"🧣",es:"Bufanda",en:"Scarf",pt:"Cachecol",ko:"스카프",it:"Sciarpa",fr:"Écharpe"},
+    {e:"🧤",es:"Guantes",en:"Gloves",pt:"Luvas",ko:"장갑",it:"Guanti",fr:"Gants"},
+    {e:"👙",es:"Traje baño",en:"Swimsuit",pt:"Maiô",ko:"수영복",it:"Costume",fr:"Maillot"},
+    {e:"🧦",es:"Calcetín",en:"Sock",pt:"Meia",ko:"양말",it:"Calzino",fr:"Chaussette"},
+    {e:"👠",es:"Tacón",en:"High heel",pt:"Salto alto",ko:"하이힐",it:"Tacco",fr:"Talon"},
+    {e:"👜",es:"Bolso",en:"Handbag",pt:"Bolsa",ko:"핸드백",it:"Borsa",fr:"Sac à main"},
+    {e:"🎩",es:"Chistera",en:"Top hat",pt:"Cartola",ko:"탑햇",it:"Cilindro",fr:"Haut-de-forme"},
+    {e:"👓",es:"Lentes",en:"Glasses",pt:"Óculos",ko:"안경",it:"Occhiali",fr:"Lunettes"},
+    {e:"💍",es:"Anillo",en:"Ring",pt:"Anel",ko:"반지",it:"Anello",fr:"Bague"},
+    {e:"⌚",es:"Reloj",en:"Watch",pt:"Relógio",ko:"시계",it:"Orologio",fr:"Montre"},
+    {e:"🧢",es:"Gorra",en:"Cap",pt:"Boné",ko:"모자",it:"Berretto",fr:"Casquette"},
+    {e:"👞",es:"Zapato",en:"Shoe",pt:"Sapato",ko:"구두",it:"Scarpa",fr:"Chaussure"},
+    {e:"🩴",es:"Sandalia",en:"Sandal",pt:"Sandália",ko:"샌들",it:"Sandalo",fr:"Sandale"},
+    {e:"🧳",es:"Maleta",en:"Suitcase",pt:"Mala",ko:"여행가방",it:"Valigia",fr:"Valise"},
+    {e:"👚",es:"Suéter",en:"Sweater",pt:"Suéter",ko:"스웨터",it:"Maglione",fr:"Pull"},
+    {e:"🥾",es:"Bota",en:"Boot",pt:"Bota",ko:"부츠",it:"Stivale",fr:"Botte"},
+    {e:"🩲",es:"Calzoncillo",en:"Underwear",pt:"Cueca",ko:"팬티",it:"Mutande",fr:"Slip"},
+    {e:"🧤",es:"Mitón",en:"Mitten",pt:"Luva",ko:"벙어리장갑",it:"Muffola",fr:"Moufle"}
+  ]},
+  numeros:{icon:"🔢",bg:"#0a1525",names:{es:"Números",en:"Numbers",pt:"Números",ko:"숫자",it:"Numeri",fr:"Nombres"},items:[
+    {n:1,es:"Uno",en:"One",pt:"Um",ko:"일",it:"Uno",fr:"Un"},
+    {n:2,es:"Dos",en:"Two",pt:"Dois",ko:"이",it:"Due",fr:"Deux"},
+    {n:3,es:"Tres",en:"Three",pt:"Três",ko:"삼",it:"Tre",fr:"Trois"},
+    {n:4,es:"Cuatro",en:"Four",pt:"Quatro",ko:"사",it:"Quattro",fr:"Quatre"},
+    {n:5,es:"Cinco",en:"Five",pt:"Cinco",ko:"오",it:"Cinque",fr:"Cinq"},
+    {n:6,es:"Seis",en:"Six",pt:"Seis",ko:"육",it:"Sei",fr:"Six"},
+    {n:7,es:"Siete",en:"Seven",pt:"Sete",ko:"칠",it:"Sette",fr:"Sept"},
+    {n:8,es:"Ocho",en:"Eight",pt:"Oito",ko:"팔",it:"Otto",fr:"Huit"},
+    {n:9,es:"Nueve",en:"Nine",pt:"Nove",ko:"구",it:"Nove",fr:"Neuf"},
+    {n:10,es:"Diez",en:"Ten",pt:"Dez",ko:"십",it:"Dieci",fr:"Dix"},
+    {n:11,es:"Once",en:"Eleven",pt:"Onze",ko:"십일",it:"Undici",fr:"Onze"},
+    {n:12,es:"Doce",en:"Twelve",pt:"Doze",ko:"십이",it:"Dodici",fr:"Douze"},
+    {n:13,es:"Trece",en:"Thirteen",pt:"Treze",ko:"십삼",it:"Tredici",fr:"Treize"},
+    {n:14,es:"Catorce",en:"Fourteen",pt:"Catorze",ko:"십사",it:"Quattordici",fr:"Quatorze"},
+    {n:15,es:"Quince",en:"Fifteen",pt:"Quinze",ko:"십오",it:"Quindici",fr:"Quinze"},
+    {n:16,es:"Dieciséis",en:"Sixteen",pt:"Dezesseis",ko:"십육",it:"Sedici",fr:"Seize"},
+    {n:17,es:"Diecisiete",en:"Seventeen",pt:"Dezessete",ko:"십칠",it:"Diciassette",fr:"Dix-sept"},
+    {n:18,es:"Dieciocho",en:"Eighteen",pt:"Dezoito",ko:"십팔",it:"Diciotto",fr:"Dix-huit"},
+    {n:19,es:"Diecinueve",en:"Nineteen",pt:"Dezenove",ko:"십구",it:"Diciannove",fr:"Dix-neuf"},
+    {n:20,es:"Veinte",en:"Twenty",pt:"Vinte",ko:"이십",it:"Venti",fr:"Vingt"},
+    
+  ]},
+  colores:{icon:"🎨",bg:"#1f1205",names:{es:"Colores",en:"Colors",pt:"Cores",ko:"색상",it:"Colori",fr:"Couleurs"},items:[
+    {e:"🔴",es:"Rojo",en:"Red",pt:"Vermelho",ko:"빨간색",it:"Rosso",fr:"Rouge"},
+    {e:"🟠",es:"Naranja",en:"Orange",pt:"Laranja",ko:"주황색",it:"Arancione",fr:"Orange"},
+    {e:"🟡",es:"Amarillo",en:"Yellow",pt:"Amarelo",ko:"노란색",it:"Giallo",fr:"Jaune"},
+    {e:"🟢",es:"Verde",en:"Green",pt:"Verde",ko:"초록색",it:"Verde",fr:"Vert"},
+    {e:"🔵",es:"Azul",en:"Blue",pt:"Azul",ko:"파란색",it:"Blu",fr:"Bleu"},
+    {e:"🟣",es:"Morado",en:"Purple",pt:"Roxo",ko:"보라색",it:"Viola",fr:"Violet"},
+    {e:"🩷",es:"Rosa",en:"Pink",pt:"Rosa",ko:"분홍색",it:"Rosa",fr:"Rose"},
+    {e:"🟤",es:"Marrón",en:"Brown",pt:"Marrom",ko:"갈색",it:"Marrone",fr:"Marron"},
+    {e:"⬛",es:"Negro",en:"Black",pt:"Preto",ko:"검은색",it:"Nero",fr:"Noir"},
+    {e:"⬜",es:"Blanco",en:"White",pt:"Branco",ko:"흰색",it:"Bianco",fr:"Blanc"},
+    {e:"🩵",es:"Celeste",en:"Sky blue",pt:"Azul claro",ko:"하늘색",it:"Azzurro",fr:"Bleu ciel"},
+    {e:"🩶",es:"Gris",en:"Gray",pt:"Cinza",ko:"회색",it:"Grigio",fr:"Gris"},
+    {e:"🟥",es:"Carmesí",en:"Crimson",pt:"Carmesim",ko:"진빨강",it:"Cremisi",fr:"Cramoisi"},
+    {e:"🟦",es:"Índigo",en:"Indigo",pt:"Índigo",ko:"남색",it:"Indaco",fr:"Indigo"},
+    {e:"🌿",es:"Verde oliva",en:"Olive green",pt:"Verde oliva",ko:"올리브색",it:"Verde oliva",fr:"Vert olive"},
+    {e:"🧡",es:"Durazno",en:"Peach",pt:"Pêssego",ko:"살구색",it:"Pesca",fr:"Pêche"},
+    {e:"💛",es:"Dorado",en:"Gold",pt:"Dourado",ko:"금색",it:"Oro",fr:"Or"},
+    {e:"💜",es:"Lavanda",en:"Lavender",pt:"Lavanda",ko:"라벤더",it:"Lavanda",fr:"Lavande"},
+    {e:"🤍",es:"Crema",en:"Cream",pt:"Creme",ko:"크림색",it:"Crema",fr:"Crème"},
+    {e:"🖤",es:"Carbón",en:"Charcoal",pt:"Carvão",ko:"숯색",it:"Carbone",fr:"Charbon"}
+  ]},
+  paises:{icon:"🌍",bg:"#001a1f",names:{es:"Países",en:"Countries",pt:"Países",ko:"나라",it:"Paesi",fr:"Pays"},items:[
+    {e:"🇲🇽",es:"México",en:"Mexico",pt:"México",ko:"멕시코",it:"Messico",fr:"Mexique"},
+    {e:"🇧🇷",es:"Brasil",en:"Brazil",pt:"Brasil",ko:"브라질",it:"Brasile",fr:"Brésil"},
+    {e:"🇺🇸",es:"EE.UU.",en:"USA",pt:"EUA",ko:"미국",it:"Stati Uniti",fr:"États-Unis"},
+    {e:"🇯🇵",es:"Japón",en:"Japan",pt:"Japão",ko:"일본",it:"Giappone",fr:"Japon"},
+    {e:"🇫🇷",es:"Francia",en:"France",pt:"França",ko:"프랑스",it:"Francia",fr:"France"},
+    {e:"🇩🇪",es:"Alemania",en:"Germany",pt:"Alemanha",ko:"독일",it:"Germania",fr:"Allemagne"},
+    {e:"🇮🇹",es:"Italia",en:"Italy",pt:"Itália",ko:"이탈리아",it:"Italia",fr:"Italie"},
+    {e:"🇨🇴",es:"Colombia",en:"Colombia",pt:"Colômbia",ko:"콜롬비아",it:"Colombia",fr:"Colombie"},
+    {e:"🇦🇷",es:"Argentina",en:"Argentina",pt:"Argentina",ko:"아르헨티나",it:"Argentina",fr:"Argentine"},
+    {e:"🇰🇷",es:"Corea",en:"Korea",pt:"Coreia",ko:"한국",it:"Corea",fr:"Corée"},
+    {e:"🇨🇳",es:"China",en:"China",pt:"China",ko:"중국",it:"Cina",fr:"Chine"},
+    {e:"🇪🇸",es:"España",en:"Spain",pt:"Espanha",ko:"스페인",it:"Spagna",fr:"Espagne"},
+    {e:"🇷🇺",es:"Rusia",en:"Russia",pt:"Rússia",ko:"러시아",it:"Russia",fr:"Russie"},
+    {e:"🇮🇳",es:"India",en:"India",pt:"Índia",ko:"인도",it:"India",fr:"Inde"},
+    {e:"🇨🇦",es:"Canadá",en:"Canada",pt:"Canadá",ko:"캐나다",it:"Canada",fr:"Canada"},
+    {e:"🇦🇺",es:"Australia",en:"Australia",pt:"Austrália",ko:"호주",it:"Australia",fr:"Australie"},
+    {e:"🇳🇱",es:"Holanda",en:"Netherlands",pt:"Holanda",ko:"네덜란드",it:"Olanda",fr:"Pays-Bas"},
+    {e:"🇵🇹",es:"Portugal",en:"Portugal",pt:"Portugal",ko:"포르투갈",it:"Portogallo",fr:"Portugal"},
+    {e:"🇸🇻",es:"El Salvador",en:"El Salvador",pt:"El Salvador",ko:"엘살바도르",it:"El Salvador",fr:"El Salvador"},
+    {e:"🇨🇱",es:"Chile",en:"Chile",pt:"Chile",ko:"칠레",it:"Cile",fr:"Chili"},
+    {e:"🇵🇪",es:"Perú",en:"Peru",pt:"Peru",ko:"페루",it:"Perù",fr:"Pérou"},
+    {e:"🇬🇧",es:"Reino Unido",en:"UK",pt:"Reino Unido",ko:"영국",it:"UK",fr:"Royaume-Uni"},
+    {e:"🇹🇷",es:"Turquía",en:"Turkey",pt:"Turquia",ko:"터키",it:"Turchia",fr:"Turquie"},
+    {e:"🇿🇦",es:"Sudáfrica",en:"South Africa",pt:"África do Sul",ko:"남아프리카",it:"Sudafrica",fr:"Afrique du Sud"}
+  ]},
+  comida:{icon:"🍕",bg:"#1f1000",names:{es:"Comida",en:"Food",pt:"Comida",ko:"음식",it:"Cibo",fr:"Nourriture"},items:[
+    {e:"🍕",es:"Pizza",en:"Pizza",pt:"Pizza",ko:"피자",it:"Pizza",fr:"Pizza"},
+    {e:"🍔",es:"Hamburguesa",en:"Burger",pt:"Hambúrguer",ko:"햄버거",it:"Hamburger",fr:"Burger"},
+    {e:"🍜",es:"Fideos",en:"Noodles",pt:"Macarrão",ko:"국수",it:"Tagliatelle",fr:"Nouilles"},
+    {e:"🍣",es:"Sushi",en:"Sushi",pt:"Sushi",ko:"스시",it:"Sushi",fr:"Sushi"},
+    {e:"🥗",es:"Ensalada",en:"Salad",pt:"Salada",ko:"샐러드",it:"Insalata",fr:"Salade"},
+    {e:"🍰",es:"Pastel",en:"Cake",pt:"Bolo",ko:"케이크",it:"Torta",fr:"Gâteau"},
+    {e:"🥪",es:"Sándwich",en:"Sandwich",pt:"Sanduíche",ko:"샌드위치",it:"Panino",fr:"Sandwich"},
+    {e:"🍦",es:"Helado",en:"Ice cream",pt:"Sorvete",ko:"아이스크림",it:"Gelato",fr:"Glace"},
+    {e:"🍩",es:"Dona",en:"Donut",pt:"Rosquinha",ko:"도넛",it:"Ciambella",fr:"Beignet"},
+    {e:"🌮",es:"Taco",en:"Taco",pt:"Taco",ko:"타코",it:"Taco",fr:"Taco"},
+    {e:"🍱",es:"Bento",en:"Bento",pt:"Bento",ko:"도시락",it:"Bento",fr:"Bento"},
+    {e:"🍛",es:"Curry",en:"Curry",pt:"Curry",ko:"카레",it:"Curry",fr:"Curry"},
+    {e:"🥘",es:"Guiso",en:"Stew",pt:"Ensopado",ko:"스튜",it:"Stufato",fr:"Ragoût"},
+    {e:"🍤",es:"Camarón",en:"Shrimp",pt:"Camarão",ko:"새우",it:"Gambero",fr:"Crevette"},
+    {e:"🌯",es:"Burrito",en:"Burrito",pt:"Burrito",ko:"부리토",it:"Burrito",fr:"Burrito"},
+    {e:"🥞",es:"Panqueques",en:"Pancakes",pt:"Panquecas",ko:"팬케이크",it:"Pancakes",fr:"Crêpes"},
+    {e:"🧇",es:"Waffle",en:"Waffle",pt:"Waffle",ko:"와플",it:"Waffle",fr:"Gaufre"},
+    {e:"🍜",es:"Ramen",en:"Ramen",pt:"Ramen",ko:"라면",it:"Ramen",fr:"Ramen"},
+    {e:"🥙",es:"Falafel",en:"Falafel",pt:"Falafel",ko:"팔라펠",it:"Falafel",fr:"Falafel"},
+    {e:"🍗",es:"Pollo",en:"Chicken",pt:"Frango",ko:"닭고기",it:"Pollo",fr:"Poulet"},
+    {e:"🥩",es:"Carne",en:"Meat",pt:"Carne",ko:"고기",it:"Carne",fr:"Viande"},
+    {e:"🥚",es:"Huevo",en:"Egg",pt:"Ovo",ko:"달걀",it:"Uovo",fr:"Œuf"},
+    {e:"🧀",es:"Queso",en:"Cheese",pt:"Queijo",ko:"치즈",it:"Formaggio",fr:"Fromage"},
+    {e:"🍞",es:"Pan",en:"Bread",pt:"Pão",ko:"빵",it:"Pane",fr:"Pain"}
+  ]},
+  cuerpo:{icon:"🖐",bg:"#1a0525",names:{es:"Cuerpo",en:"Body",pt:"Corpo",ko:"신체",it:"Corpo",fr:"Corps"},items:[
+    {e:"👁️",es:"Ojo",en:"Eye",pt:"Olho",ko:"눈",it:"Occhio",fr:"Œil"},
+    {e:"👂",es:"Oreja",en:"Ear",pt:"Orelha",ko:"귀",it:"Orecchio",fr:"Oreille"},
+    {e:"👃",es:"Nariz",en:"Nose",pt:"Nariz",ko:"코",it:"Naso",fr:"Nez"},
+    {e:"👄",es:"Boca",en:"Mouth",pt:"Boca",ko:"입",it:"Bocca",fr:"Bouche"},
+    {e:"🖐",es:"Mano",en:"Hand",pt:"Mão",ko:"손",it:"Mano",fr:"Main"},
+    {e:"🦷",es:"Diente",en:"Tooth",pt:"Dente",ko:"이",it:"Dente",fr:"Dent"},
+    {e:"🦵",es:"Pierna",en:"Leg",pt:"Perna",ko:"다리",it:"Gamba",fr:"Jambe"},
+    {e:"🦶",es:"Pie",en:"Foot",pt:"Pé",ko:"발",it:"Piede",fr:"Pied"},
+    {e:"💪",es:"Brazo",en:"Arm",pt:"Braço",ko:"팔",it:"Braccio",fr:"Bras"},
+    {e:"🫀",es:"Corazón",en:"Heart",pt:"Coração",ko:"심장",it:"Cuore",fr:"Cœur"},
+    {e:"🧠",es:"Cerebro",en:"Brain",pt:"Cérebro",ko:"뇌",it:"Cervello",fr:"Cerveau"},
+    {e:"🦴",es:"Hueso",en:"Bone",pt:"Osso",ko:"뼈",it:"Osso",fr:"Os"},
+    {e:"🫁",es:"Pulmón",en:"Lung",pt:"Pulmão",ko:"폐",it:"Polmone",fr:"Poumon"},
+    {e:"👅",es:"Lengua",en:"Tongue",pt:"Língua",ko:"혀",it:"Lingua",fr:"Langue"},
+    {e:"🦾",es:"Hombro",en:"Shoulder",pt:"Ombro",ko:"어깨",it:"Spalla",fr:"Épaule"},
+    {e:"🤚",es:"Palma",en:"Palm",pt:"Palma",ko:"손바닥",it:"Palmo",fr:"Paume"},
+    {e:"👆",es:"Dedo",en:"Finger",pt:"Dedo",ko:"손가락",it:"Dito",fr:"Doigt"},
+    {e:"🦷",es:"Muela",en:"Molar",pt:"Molar",ko:"어금니",it:"Molare",fr:"Molaire"},
+    {e:"👀",es:"Ojos",en:"Eyes",pt:"Olhos",ko:"눈들",it:"Occhi",fr:"Yeux"},
+    {e:"🫶",es:"Pecho",en:"Chest",pt:"Peito",ko:"가슴",it:"Petto",fr:"Poitrine"},
+    {e:"🙆",es:"Cabeza",en:"Head",pt:"Cabeça",ko:"머리",it:"Testa",fr:"Tête"},
+    {e:"🦵",es:"Rodilla",en:"Knee",pt:"Joelho",ko:"무릎",it:"Ginocchio",fr:"Genou"},
+    {e:"🦶",es:"Tobillo",en:"Ankle",pt:"Tornozelo",ko:"발목",it:"Caviglia",fr:"Cheville"},
+    {e:"💅",es:"Uña",en:"Nail",pt:"Unha",ko:"손톱",it:"Unghia",fr:"Ongle"}
+  ]}
+};
+
+const sbTitles={es:"Categorías",en:"Categories",pt:"Categorias",ko:"카테고리",it:"Categorie",fr:"Catégories"};
+let lang='es',currentCat='frutas';
+
+function makeStars(){
+  const c=document.getElementById('stars');
+  for(let i=0;i<80;i++){
+    const s=document.createElement('div');s.className='star';
+    const sz=Math.random()*2.8+.7;
+    s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;animation-duration:${(Math.random()*2.5+1.2).toFixed(1)}s;animation-delay:${(Math.random()*3).toFixed(1)}s`;
+    c.appendChild(s);
+  }
+  const cols=['#7b4fff','#ff6bbd','#4fc3f7','#ffca28','#69f0ae'];
+  for(let i=0;i<6;i++){
+    const p=document.createElement('div');p.className='planet';
+    const sz=Math.random()*110+40;
+    p.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*90}%;left:${Math.random()*90}%;background:${cols[i%5]};filter:blur(${sz*.48}px)`;
+    c.appendChild(p);
+  }
+}
+makeStars();
+
+function renderSidebar(){
+  const list=document.getElementById('cat-list');
+  list.innerHTML='';
+  document.getElementById('sidebar-title').textContent=sbTitles[lang];
+  Object.keys(DATA).forEach(key=>{
+    const d=DATA[key];
+    const b=document.createElement('button');
+    b.className='cat-btn'+(key===currentCat?' active':'');
+    b.id='sb-'+key;
+    b.innerHTML=`<span class="cat-icon">${d.icon}</span><span class="cat-label">${d.names[lang]}</span>`;
+    b.onclick=()=>renderGrid(key);
+    list.appendChild(b);
+  });
+}
+
+function renderGrid(cat){
+  currentCat=cat;
+  document.body.style.background=DATA[cat].bg||'#0d0820';
+  document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+  const ab=document.getElementById('sb-'+cat);if(ab)ab.classList.add('active');
+  const items=DATA[cat].items;
+  const g=document.getElementById('grid');g.innerHTML='';
+  items.forEach(item=>{
+    const d=document.createElement('div');d.className='item-card';
+    let top,word;
+    if(item.n!==undefined){
+      top=`<span class="numtxt">${item.n}</span>`;
+      word=item[lang];
+    } else {
+      top=`<span class="emoji">${item.e}</span>`;
+      word=item[lang];
+    }
+    d.innerHTML=`${top}<span class="label">${word}</span>`;
+    d.onclick=()=>speak(word, item.e||String(item.n));
+    g.appendChild(d);
+  });
+  document.getElementById('cat-title').textContent=DATA[cat].names[lang];
+}
+
+function setLang(l){
+  lang=l;
+  document.querySelectorAll('#lang-panel button').forEach(b=>b.classList.remove('active'));
+  document.getElementById('btn-'+l).classList.add('active');
+  document.getElementById('lang-panel').classList.remove('open');
+  renderSidebar();renderGrid(currentCat);
+}
+
+document.getElementById('gear-btn').onclick=function(e){
+  e.stopPropagation();
+  document.getElementById('lang-panel').classList.toggle('open');
+};
+document.addEventListener('click',()=>document.getElementById('lang-panel').classList.remove('open'));
+document.getElementById('lang-panel').addEventListener('click',e=>e.stopPropagation());
+
+let bubTimer=null;
+function speak(text,emoji){
+  if('speechSynthesis' in window){
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);
+    const lc={es:'es-ES',en:'en-US',pt:'pt-BR',ko:'ko-KR',it:'it-IT',fr:'fr-FR'};
+    u.lang=lc[lang];u.rate=0.88;speechSynthesis.speak(u);
+  }
+  const b=document.getElementById('bubble');
+  b.textContent=emoji+'  '+text;
+  b.style.display='block';
+  clearTimeout(bubTimer);
+  bubTimer=setTimeout(()=>b.style.display='none',2600);
+}
+
+renderSidebar();renderGrid('frutas');
+</script>
